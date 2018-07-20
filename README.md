@@ -21,5 +21,5 @@ Locate your Chromedriver location in ridi_purchase_list.py
 - **$ python ridi_purchase_list.py**
 - Wait until the chrome window is appeared
 - Login with your ridibooks account
-- Wait. Tada! Your purchase list is saved in **purchase_list.py**
+- Wait. Tada! Your purchase list is saved in **purchase_list.csv**
 
