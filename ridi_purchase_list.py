@@ -2,7 +2,10 @@
 
 import csv
 import ridi_parser as ridi
+from selenium.webdriver.common.by import By
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 chrome_driver = './chromedriver.exe'
 ### MAIN FUNCTION HERE
@@ -20,11 +23,18 @@ driver.implicitly_wait(5)
 driver.get('https://ridibooks.com/account/login')
 print("Please login to the Ridibooks page")
 
+#try:
+#    while(not (driver.find_element_by_id('login_id') is None)):
+#        continue
+#except Exception:
+#    print("Login detected")
+
 try:
-    while(not (driver.find_element_by_id('login_id') is None)):
-        continue
-except Exception:
-    print("Successful login detected")
+    element = WebDriverWait(driver, 3600).until(
+        EC.presence_of_element_located((By.ID, "divMyMenuLayer"))
+    )
+finally:
+    print("Login detected")
 
 filename = 'purchase_list.csv'
 
@@ -61,5 +71,7 @@ with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
                     subPage += 1
         page += 1
 
-    driver.close()
+driver.close()
+driver.quit()
 
+print("COMPLETE!!!!")
