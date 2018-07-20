@@ -12,19 +12,17 @@ def checkExpire(bs_ele):
         period = rental.find(class_='period_time')
         expire = rental.find(class_='expired')
         isExpired = not(rental.find(class_='expired') is None)
-        if isExpired:
-            expire = 'END'
-        else:
+        expire = 0.0
+
+        if not isExpired:
             expire_text = period.get_text().strip()
             day = re.search('([0-9]*)(일)', expire_text)
             hour = re.search('([0-9]*)(시간)', expire_text)
-
-            expire = 0.0
-
             if not(day is None):
                 expire += float(day[1])
             if not(hour is None):
                 expire += float(hour[1])/24
+                
     return expire
 
 def get_id(address):
@@ -76,7 +74,7 @@ def parse_a_page(html_text):
     return output
 
 def get_header_line():
-    return ['ID', 'Title', 'Author', 'Group', 'GroupName', 'ExpireDate', 'Link']
+    return ['BookID', u'도서명', u'저자', 'isSet', u'세트명', '대여만료', 'Link']
 
 
 def get_a_page(crawler, pageNum):

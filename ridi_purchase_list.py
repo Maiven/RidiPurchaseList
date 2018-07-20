@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import csv
 import ridi_parser as ridi
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
 
-
-chrome_driver = './chromedriver'
+chrome_driver = './chromedriver.exe'
 ### MAIN FUNCTION HERE
 option = webdriver.ChromeOptions()
 #option.add_argument('headless')
@@ -14,14 +16,27 @@ chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
 
 driver = webdriver.Chrome(chrome_driver, chrome_options=option)
 #driver = webdriver.Chrome(chrome_driver)
-driver.implicitly_wait(3)
+driver.implicitly_wait(5)
 
 driver.get('https://ridibooks.com/account/login')
-input("Please log in, and press Enter")
+print("Please login to the Ridibooks page")
 
-with open('purchase_list.csv', 'w', newline='') as csvfile:
+try:
+    while(not (driver.find_element_by_id('login_id') is None)):
+        continue
+except Exception:
+    print("Successful login detected")
+
+filename = 'purchase_list.csv'
+
+# Unicode header
+with open(filename, 'wb') as unicode_file:
+    unicode_file.write(b'\xef\xbb\xbf')
+
+with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
     page = 1
     listwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+    listwriter.writerow(ridi.get_header_line())
 
     while True:
         books = ridi.get_a_page(driver, page)
@@ -40,7 +55,7 @@ with open('purchase_list.csv', 'w', newline='') as csvfile:
                     if len(group_books) == 0:
                         break
                     for group_book in group_books:
-                        print(group_book['title'],'in',group_book['series'])
+                        print((group_book['title']+' in '+group_book['series']))
                         group_book['isGroup'] = True
                         listwriter.writerow(group_book.values())
                         csvfile.flush()
