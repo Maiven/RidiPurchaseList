@@ -3,7 +3,6 @@
 import csv
 import ridi_parser as ridi
 from selenium import webdriver
-from selenium.webdriver.support import expected_conditions as EC
 
 chrome_driver = './chromedriver.exe'
 ### MAIN FUNCTION HERE
