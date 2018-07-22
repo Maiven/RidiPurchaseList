@@ -1,25 +1,48 @@
 import csv
 from selenium import webdriver
-from pyquery import PyQuery as pq
-from urllib.parse import urlparse
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 chrome_driver = './chromedriver'
 
-options = webdriver.ChromeOptions()
-options.add_argument('headless')
+pageStart = 1
+pageEnd = 2
 
+#options = webdriver.ChromeOptions()
+#options.add_argument('headless')
 # driver = webdriver.Chrome(chrome_driver, chrome_options=options)
-driver = webdriver.Chrome(chrome_driver)
-driver.implicitly_wait(3)
+option = webdriver.ChromeOptions()
+#option.add_argument('headless')
+chrome_prefs = {}
+option.experimental_options["prefs"] = chrome_prefs
+chrome_prefs["profile.default_content_settings"] = {"images": 2}
+chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
+
+driver = webdriver.Chrome(chrome_driver, chrome_options=option)
+driver.implicitly_wait(5)
 
 driver.get('https://ridibooks.com/account/login')
-input("Please log in, and press Enter")
+print("Please login to the Ridibooks page")
 
-with open('result.csv', 'w', newline='') as csvfile:
-    page = 50
+try:
+    element = WebDriverWait(driver, 3600).until(
+        EC.presence_of_element_located((By.ID, "divMyMenuLayer"))
+    )
+finally:
+    print("Login detected")
+
+filename = 'select_list.csv'
+
+# Unicode header
+with open(filename, 'wb') as unicode_file:
+    unicode_file.write(b'\xef\xbb\xbf')
+
+with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
+    page = pageStart
     listwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
 
-    while True:
+    while page <= pageEnd:
         #driver.get('https://select.ridibooks.com/books?page=%d'%(page))
         driver.get('https://select.ridibooks.com/new-releases?page=%d'%(page))
         elements = driver.find_elements_by_class_name('GridBookList_ItemLink')

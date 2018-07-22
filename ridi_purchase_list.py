@@ -7,7 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-chrome_driver = './chromedriver.exe'
+chrome_driver = './chromedriver'
 ### MAIN FUNCTION HERE
 option = webdriver.ChromeOptions()
 #option.add_argument('headless')
@@ -23,11 +23,9 @@ driver.implicitly_wait(5)
 driver.get('https://ridibooks.com/account/login')
 print("Please login to the Ridibooks page")
 
-#try:
-#    while(not (driver.find_element_by_id('login_id') is None)):
-#        continue
-#except Exception:
-#    print("Login detected")
+# Image retrive code
+# import urllib.request
+# urllib.request.urlretrieve("https://misc.ridibooks.com/cover/505012511/xxlarge", "505012511.jpg")
 
 try:
     element = WebDriverWait(driver, 3600).until(
