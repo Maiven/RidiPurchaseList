@@ -1,3 +1,5 @@
+# 리디북스 구매목록 추출
+
 # RidiPurchaseList
 Python scripts that parse the Ridibooks purchase list.
 
