@@ -83,5 +83,5 @@ with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
 driver.close()
 driver.quit()
 
-print("Total %d books were collected", bookcount)
+print("Total %d books were collected"%(bookcount))
 print("COMPLETE!!!!")
