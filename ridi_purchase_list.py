@@ -35,6 +35,7 @@ finally:
     print("Login detected")
 
 filename = 'purchase_list.csv'
+bookcount = 0
 
 # Unicode header
 with open(filename, 'wb') as unicode_file:
@@ -50,26 +51,37 @@ with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
         if len(books) == 0:
             break
 
+        groupCount = 0
+
         for book in books:
             if not book['isGroup']:
                 print(book['title'])
                 listwriter.writerow(book.values())
+                bookcount += 1
                 csvfile.flush()
             else:
-                subPage = 1
-                while True:
-                    group_books = ridi.get_a_group_page(driver, book['link'], subPage)
-                    if len(group_books) == 0:
-                        break
-                    for group_book in group_books:
-                        print((group_book['title']+' in '+group_book['series']))
-                        group_book['isGroup'] = True
-                        listwriter.writerow(group_book.values())
-                        csvfile.flush()
-                    subPage += 1
+                groupCount += 1
+
+        for groupNo in range(1, groupCount+1):
+            groupPageLink = ridi.get_a_group_link(driver, page, groupNo)
+ 
+            subPage = 1
+            while True:
+                group_books = ridi.get_a_group_page(driver, groupPageLink, subPage)
+                if len(group_books) == 0:
+                    break
+                for group_book in group_books:
+                    print((group_book['title']+' in '+group_book['series']))
+                    group_book['isGroup'] = True
+                    listwriter.writerow(group_book.values())
+                    bookcount += 1
+                    csvfile.flush()
+                subPage += 1
+                
         page += 1
 
 driver.close()
 driver.quit()
 
+print("Total %d books were collected", bookcount)
 print("COMPLETE!!!!")
